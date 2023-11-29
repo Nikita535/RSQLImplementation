@@ -7,6 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TaskDto {
-    private String code;
+public class UserDto {
+    private String username;
+    private String password;
+    private String email;
+
 }
