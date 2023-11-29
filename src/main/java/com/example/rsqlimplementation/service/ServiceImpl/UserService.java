@@ -3,6 +3,8 @@ package com.example.rsqlimplementation.service.ServiceImpl;
 
 import com.example.rsqlimplementation.config.jwt.JwtUtil;
 import com.example.rsqlimplementation.controller.AuthController;
+import com.example.rsqlimplementation.exception.BadRequestException;
+import com.example.rsqlimplementation.exception.UserServiceMessages;
 import com.example.rsqlimplementation.model.domain.Role;
 import com.example.rsqlimplementation.model.domain.User;
 import com.example.rsqlimplementation.model.dto.RegisterRequestDto;
@@ -57,7 +59,7 @@ public class UserService {
 
     public void registerUser(RegisterRequestDto registerRequestDTO) {
         if (repository.findByUsername(registerRequestDTO.getUsername()).isPresent()) {
-            throw new RuntimeException("Такой пользователь уже существует");
+            throw new BadRequestException(UserServiceMessages.USER_ALREADY_EXISTS,registerRequestDTO.getUsername());
         }
         save(User.builder()
                 .email(registerRequestDTO.getEmail())
