@@ -1,6 +1,5 @@
 package com.example.rsqlimplementation.exception;
 
-import com.example.rsqlimplementation.exception.Message;
 import com.example.rsqlimplementation.exception.base.BaseException;
 
 public class BadRequestException extends BaseException {

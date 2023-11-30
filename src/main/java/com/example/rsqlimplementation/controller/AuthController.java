@@ -6,17 +6,19 @@ import com.example.rsqlimplementation.model.dto.UserDto;
 import com.example.rsqlimplementation.service.ServiceImpl.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
-;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping(ApiPath.AUTH_API)
 public class AuthController {
 
@@ -27,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDto registerRequestDTO) {
+    public ResponseEntity<RegisterResponseDto> registerUser(@RequestBody @Valid RegisterRequestDto registerRequestDTO) {
         userService.registerUser(registerRequestDTO);
         return ResponseEntity.ok(new RegisterResponseDto("Пользователь зарегистрирован!"));
     }
