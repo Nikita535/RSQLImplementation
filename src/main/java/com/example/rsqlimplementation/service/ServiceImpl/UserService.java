@@ -5,7 +5,7 @@ import com.example.rsqlimplementation.config.jwt.JwtUtil;
 import com.example.rsqlimplementation.controller.AuthController;
 import com.example.rsqlimplementation.exception.BadRequestException;
 import com.example.rsqlimplementation.exception.UserServiceMessages;
-import com.example.rsqlimplementation.model.domain.Role;
+import com.example.rsqlimplementation.model.type.Role;
 import com.example.rsqlimplementation.model.domain.User;
 import com.example.rsqlimplementation.model.dto.RegisterRequestDto;
 import com.example.rsqlimplementation.model.dto.UserDto;

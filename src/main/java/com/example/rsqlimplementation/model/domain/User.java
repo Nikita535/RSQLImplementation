@@ -1,15 +1,12 @@
 package com.example.rsqlimplementation.model.domain;
 
+import com.example.rsqlimplementation.model.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,10 +56,14 @@ public class User implements UserDetails {
     private String password;
 
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> authorities = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     public User(String email, String username, String password, Set<Role> authorities) {
         this.username = username;
