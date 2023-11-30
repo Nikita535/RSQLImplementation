@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserServiceMessages implements Message {
 
-    USER_ALREADY_EXISTS(-10,"error.user_already_exists");
+    USER_ALREADY_EXISTS(-10,"error.user_already_exists"),
+    USER_NOT_FOUND(-11,"error.user_not_found");
 
 
 

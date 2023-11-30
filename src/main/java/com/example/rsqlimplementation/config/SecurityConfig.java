@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> {authorizationManagerRequestMatcherRegistry
-                        .requestMatchers("/auth/register", "/auth/login","/swagger-ui/**",
+                        .requestMatchers("**","/swagger-ui/**",
                                 "/swagger-resources/*",
                                 "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated();})

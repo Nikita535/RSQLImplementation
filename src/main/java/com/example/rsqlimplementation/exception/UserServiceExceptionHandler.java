@@ -1,6 +1,7 @@
 package com.example.rsqlimplementation.exception;
 
 
+import com.example.rsqlimplementation.exception.base.BaseException;
 import com.example.rsqlimplementation.model.dto.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,14 @@ public class UserServiceExceptionHandler extends ResponseEntityExceptionHandler 
     protected boolean returnStacktrace;
     private static final Logger log = LoggerFactory.getLogger(UserServiceExceptionHandler.class);
 
-    @ExceptionHandler({BadRequestException.class})
-    private ResponseEntity<Object> handleUserException(BadRequestException ex){
-        return buildErrorResult(UserServiceMessages.USER_ALREADY_EXISTS, HttpStatus.BAD_REQUEST,ex);
+    @ExceptionHandler({UserAlreadyExistException.class,UserNotFoundException.class})
+    private ResponseEntity<Object> handleUserException(BaseException ex){
+        if(ex instanceof UserAlreadyExistException){
+            return buildErrorResult(UserServiceMessages.USER_ALREADY_EXISTS, HttpStatus.BAD_REQUEST,ex);
+        }else if(ex instanceof UserNotFoundException){
+            return buildErrorResult(UserServiceMessages.USER_NOT_FOUND, HttpStatus.BAD_REQUEST,ex);
+        }
+        return buildErrorResult(UserServiceMessages.USER_NOT_FOUND, HttpStatus.BAD_REQUEST,ex);
     }
 
     protected ResponseEntity<Object> buildErrorResult(Message message, HttpStatus status, Exception ex, Object... params) {

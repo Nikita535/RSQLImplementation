@@ -1,14 +1,15 @@
 package com.example.rsqlimplementation.controller;
 
-import com.example.rsqlimplementation.model.dto.PageableResult;
-import com.example.rsqlimplementation.model.dto.Result;
-import com.example.rsqlimplementation.model.dto.UserDto;
+import com.example.rsqlimplementation.model.dto.*;
 import com.example.rsqlimplementation.model.param.QuerySearchParams;
 import com.example.rsqlimplementation.model.type.Role;
 import com.example.rsqlimplementation.service.ServiceImpl.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public class UserController {
         (@Parameter(description = "query - содержит условия для фильтрации")
             QuerySearchParams params
         ){
-        var page = userService.getUsers(params);
+        var page = userService.get(params);
         return PageableResult.success(page.getContent(),params.getOffset(),params.getLimit(),page.getTotalElements());
     }
 
@@ -33,10 +34,40 @@ public class UserController {
     @Operation(description = "Создание пользователя")
     public UserDto createUser(
             @Parameter(description = "Данные пользователя")
-            @RequestBody UserDto userDto,
-            @RequestParam Role role
-            ){
-        return userService.insertUser(userDto,role);
+            @RequestBody UserCreateDto userDto
+    ){
+        return userService.create(userDto);
     }
+
+    @DeleteMapping({"{id}"})
+    @Operation(description = "Удаление пользователя")
+    public ResponseEntity<?> createUser(
+            @Parameter(description = "Данные пользователя")
+            @PathVariable Long id
+    ){
+            userService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PatchMapping({"{id}"})
+    @Operation(description = "Обновление пользователя")
+    public ResponseEntity<?> updateUser(
+            @Parameter(description = "Данные пользователя")
+            @RequestBody UserPatchDto userPatchDto,
+            @PathVariable Long id
+            ){
+        userService.update(userPatchDto,id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+//    @GetMapping("/{id}/roles")
+//    @Operation(description = "Получение ролей пользователя")
+//    public Result<List<Role>> getRoles(
+//            @Parameter(description = "Id пользователя")
+//            @PathVariable Long id
+//    ){
+//        var page = userService.getUserRoles(id);
+//        return
+//    }
 
 }
