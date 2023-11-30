@@ -3,10 +3,14 @@ package com.example.rsqlimplementation.model.domain;
 import com.example.rsqlimplementation.model.type.Role;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,6 +22,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "app_user")
+@EntityListeners(AuditingEntityListener.class)
 public class User implements UserDetails {
 
     @Id
@@ -43,11 +48,11 @@ public class User implements UserDetails {
     @Column(length = 128)
     private String fullName;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate registrationDate;
+    @CreatedDate
+    private LocalDateTime registrationDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate removalDate;
+    @LastModifiedDate
+    private LocalDateTime updatedDate;
 
     @Column(length = 64)
     private String mobilePhoneNumber;
@@ -56,7 +61,7 @@ public class User implements UserDetails {
     private String password;
 
 
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> authorities = new HashSet<>();
