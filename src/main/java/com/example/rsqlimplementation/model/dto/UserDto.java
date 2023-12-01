@@ -1,6 +1,8 @@
 package com.example.rsqlimplementation.model.dto;
 
 import com.example.rsqlimplementation.model.domain.Team;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class UserDto {
+
+    private Long id;
     private String username;
 
     private String email;
@@ -31,8 +35,8 @@ public class UserDto {
     private LocalDateTime updatedDate;
 
     private String mobilePhoneNumber;
-    private String password;
-
     private boolean active;
+
+    @JsonIgnoreProperties("users")
     private Team team;
 }

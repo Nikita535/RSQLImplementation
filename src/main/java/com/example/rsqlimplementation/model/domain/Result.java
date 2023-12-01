@@ -5,6 +5,8 @@ import com.example.rsqlimplementation.model.type.MatchResult;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Builder
@@ -12,7 +14,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "match_result")
-public class Result {
+public class Result implements Serializable {
 
     @Id
     @SequenceGenerator(name = "resultIdSeq",sequenceName = "result_id_seq",allocationSize = 1)

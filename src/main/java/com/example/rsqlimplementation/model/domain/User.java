@@ -1,6 +1,8 @@
 package com.example.rsqlimplementation.model.domain;
 
 import com.example.rsqlimplementation.model.type.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -9,6 +11,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -20,10 +23,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 @Entity
 @Table(name = "app_user")
 @EntityListeners(AuditingEntityListener.class)
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     @Id
     @SequenceGenerator(name = "userIdSeq",sequenceName = "user_id_seq",allocationSize = 1)
@@ -57,17 +61,20 @@ public class User implements UserDetails {
     @Column(length = 64)
     private String mobilePhoneNumber;
 
+    @JsonIgnore
     @Column(length = 64)
     private String password;
 
     private boolean active;
 
 
+    @JsonIgnore
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> authorities = new HashSet<>();
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "team_id")
     private Team team;

@@ -7,13 +7,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name="event_sponsor")
-public class Sponsor {
+public class Sponsor implements Serializable {
 
     @Id
     @SequenceGenerator(name = "sponsorIdSeq",sequenceName = "sponsor_id_seq",allocationSize = 1)

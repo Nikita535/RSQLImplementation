@@ -7,13 +7,10 @@ import com.example.rsqlimplementation.exception.UserAlreadyExistException;
 import com.example.rsqlimplementation.exception.UserNotFoundException;
 import com.example.rsqlimplementation.exception.UserServiceMessages;
 import com.example.rsqlimplementation.mapper.UserMapper;
-import com.example.rsqlimplementation.model.dto.UserCreateDto;
-import com.example.rsqlimplementation.model.dto.UserPatchDto;
+import com.example.rsqlimplementation.model.dto.*;
 import com.example.rsqlimplementation.model.param.QuerySearchParams;
 import com.example.rsqlimplementation.model.type.Role;
 import com.example.rsqlimplementation.model.domain.User;
-import com.example.rsqlimplementation.model.dto.RegisterRequestDto;
-import com.example.rsqlimplementation.model.dto.UserDto;
 import com.example.rsqlimplementation.reposirory.UserRepository;
 import io.github.perplexhub.rsql.RSQLJPASupport;
 import org.springframework.data.domain.Page;
@@ -26,7 +23,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -50,13 +50,13 @@ public class UserService extends CrudServiceImpl<User, UserCreateDto, UserPatchD
     }
 
 
-    public ResponseEntity<AuthController.JwtResponse> loginUser(UserDto userDto) {
+    public ResponseEntity<AuthController.JwtResponse> loginUser(UserLoginDto loginDto) {
         final Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDto.getUsername(), userDto.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         User user = (User) authentication.getPrincipal();
-        user.setEmail(userDto.getEmail());
+        user.setEmail(loginDto.getEmail());
         String jwt = jwtUtil.generateToken(user.getUsername());
 
         List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
@@ -77,26 +77,24 @@ public class UserService extends CrudServiceImpl<User, UserCreateDto, UserPatchD
         User user = entityMapper.toEntityFromCreateDto(userCreateDto);
         user.setAuthorities(Set.of(userCreateDto.getRole()));
         user.setActive(true);
+        buildFullName(user);
         save(user);
         return mapper.domainToDto(user);
     }
 
     @Override
     public UserDto update(UserPatchDto userPatchDto, Long id) {
-        if (repository.findById(id).isEmpty()){
-            throw new UserNotFoundException(UserServiceMessages.USER_NOT_FOUND,id);
-        }
+        checkUser(id);
         User user = repository.findById(id).get();
         user = entityMapper.toEntityFromCreateDtoPatch(user,userPatchDto);
+        buildFullName(user);
         repository.save(user);
         return mapper.domainToDto(user);
     }
 
     @Override
     public void delete(Long id) {
-        if (repository.findById(id).isEmpty()){
-            throw new UserNotFoundException(UserServiceMessages.USER_NOT_FOUND,id);
-        }
+       checkUser(id);
         User user = repository.findById(id).get();
         user.setActive(false);
         repository.save(user);
@@ -128,7 +126,42 @@ public class UserService extends CrudServiceImpl<User, UserCreateDto, UserPatchD
                 .authorities(Set.of(Role.ROLE_USER))
                 .build()
         );
-
-
     }
+
+    public void buildFullName(User user){
+        StringBuilder fullName = new StringBuilder();
+        if(StringUtils.hasText(user.getFirstName())) fullName.append(user.getFirstName());
+        if(StringUtils.hasText(user.getLastName())) fullName.append(" ").append(user.getLastName());
+        if(StringUtils.hasText(user.getMiddleName())) fullName.append(" ").append(user.getMiddleName());
+
+        user.setFullName(fullName.toString());
+    }
+
+    public List<Role> getRoles(Long id) {
+        checkUser(id);
+        return repository.findRolesByUserId(id);
+    }
+
+    public Set<Role> addRole(Long id, Role role) {
+        checkUser(id);
+        User user = repository.findById(id).get();
+        user.getAuthorities().add(role);
+        repository.save(user);
+        return user.getAuthorities();
+    }
+
+    public void checkUser(Long id){
+        if (repository.findById(id).isEmpty()){
+            throw new UserNotFoundException(UserServiceMessages.USER_NOT_FOUND,id);
+        }
+    }
+    public Set<Role> removeRole(Long id, Role role) {
+        checkUser(id);
+        User user = repository.findById(id).get();
+        user.getAuthorities().remove(role);
+        save(user);
+        return user.getAuthorities();
+    }
+
+    //TODO: выгрузка данных юзеров в csv
 }

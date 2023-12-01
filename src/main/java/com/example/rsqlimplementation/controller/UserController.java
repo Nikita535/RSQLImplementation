@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -60,14 +61,33 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @GetMapping("/{id}/roles")
-//    @Operation(description = "Получение ролей пользователя")
-//    public Result<List<Role>> getRoles(
-//            @Parameter(description = "Id пользователя")
-//            @PathVariable Long id
-//    ){
-//        var page = userService.getUserRoles(id);
-//        return
-//    }
+    @GetMapping("/{id}/roles")
+    @Operation(description = "Получение ролей пользователя")
+    public List<Role> getRoles(
+            @Parameter(description = "Id пользователя")
+            @PathVariable Long id
+    ){
+        return userService.getRoles(id);
+    }
+
+    @PostMapping("/role/{id}")
+    @Operation(description = "Выдать роль пользователю")
+    public Set<Role> setRole(
+            @Parameter(description = "идентификатор пользователя") @PathVariable Long id,
+            @Parameter(description = "Роль") @RequestParam Role role
+                           )
+    {
+        return userService.addRole(id,role);
+    }
+
+    @PostMapping("/role/{id}/remove")
+    @Operation(description = "Выдать роль пользователю")
+    public Set<Role> removeRole(
+            @Parameter(description = "идентификатор пользователя") @PathVariable Long id,
+            @Parameter(description = "Роль") @RequestParam Role role
+    )
+    {
+        return userService.removeRole(id,role);
+    }
 
 }

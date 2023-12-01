@@ -8,6 +8,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,7 +21,7 @@ import java.util.Set;
 @Entity
 @ToString
 @Table(name = "app_competition")
-public class Competition {
+public class Competition implements Serializable {
 
     @Id
     @SequenceGenerator(name = "competitionIdSeq",sequenceName = "competition_id_seq",allocationSize = 1)

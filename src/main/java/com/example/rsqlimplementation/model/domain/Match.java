@@ -11,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -20,7 +21,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table(name = "event_match")
-public class Match {
+public class Match implements Serializable {
 
     @Id
     @SequenceGenerator(name = "matchIdSeq",sequenceName = "match_id_seq",allocationSize = 1)
