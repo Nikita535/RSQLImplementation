@@ -164,5 +164,18 @@ public class UserService extends CrudServiceImpl<User, UserCreateDto, UserPatchD
         return user.getAuthorities();
     }
 
+    public ResponseEntity<AuthController.JwtResponse> changePassword(UserChangePasswordDto passDto, Long id) {
+        checkUser(id);
+        User user = repository.findById(id).get();
+        user.setPassword(passwordEncoder.encode(passDto.getPassword()));
+        save(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtil.generateToken(user.getUsername());
+
+        List<String> authorities = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+        return ResponseEntity.ok(new AuthController.JwtResponse(jwt, user.getId(), user.getEmail(), user.getUsername(), authorities));
+    }
+
     //TODO: выгрузка данных юзеров в csv
 }

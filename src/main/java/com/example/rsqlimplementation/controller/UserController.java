@@ -90,4 +90,16 @@ public class UserController {
         return userService.removeRole(id,role);
     }
 
+    @PostMapping("/password/{id}")
+    @Operation(description = "Смена пароля пользователя")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<AuthController.JwtResponse> changePassword(
+            @Parameter(description = "Пароль пользователя")
+            @RequestBody UserChangePasswordDto passDto,
+            @Parameter(description = "Идентификатор пользователя")
+            @PathVariable Long id
+            ){
+       return userService.changePassword(passDto,id);
+    }
+
 }
