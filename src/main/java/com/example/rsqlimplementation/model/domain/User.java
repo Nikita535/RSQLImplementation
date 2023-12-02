@@ -69,7 +69,7 @@ public class User implements UserDetails, Serializable {
 
 
     @JsonIgnore
-    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> authorities = new HashSet<>();

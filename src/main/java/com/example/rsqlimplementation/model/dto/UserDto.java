@@ -37,6 +37,5 @@ public class UserDto {
     private String mobilePhoneNumber;
     private boolean active;
 
-    @JsonIgnoreProperties("users")
-    private Team team;
+    private String teamId;
 }

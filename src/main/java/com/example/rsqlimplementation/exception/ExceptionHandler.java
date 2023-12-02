@@ -10,26 +10,27 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.util.Optional;
 
 @ControllerAdvice
-public class UserServiceExceptionHandler extends ResponseEntityExceptionHandler {
+public class ExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Autowired
     private MessageHelper messageHelper;
     @Value("${app.rest.response.exception-stacktrace:false}")
     protected boolean returnStacktrace;
-    private static final Logger log = LoggerFactory.getLogger(UserServiceExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ExceptionHandler.class);
 
-    @ExceptionHandler({UserAlreadyExistException.class,UserNotFoundException.class})
+    @org.springframework.web.bind.annotation.ExceptionHandler({UserAlreadyExistException.class,UserNotFoundException.class,TeamNotFoundException.class})
     private ResponseEntity<Object> handleUserException(BaseException ex){
         if(ex instanceof UserAlreadyExistException){
             return buildErrorResult(UserServiceMessages.USER_ALREADY_EXISTS, HttpStatus.BAD_REQUEST,ex);
         }else if(ex instanceof UserNotFoundException){
             return buildErrorResult(UserServiceMessages.USER_NOT_FOUND, HttpStatus.BAD_REQUEST,ex);
+        }else if(ex instanceof TeamNotFoundException){
+            return buildErrorResult(TeamServiceMessages.TEAM_NOT_FOUND, HttpStatus.BAD_REQUEST,ex);
         }
         return buildErrorResult(UserServiceMessages.USER_NOT_FOUND, HttpStatus.BAD_REQUEST,ex);
     }

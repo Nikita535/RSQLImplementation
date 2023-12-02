@@ -77,6 +77,7 @@ public class UserService extends CrudServiceImpl<User, UserCreateDto, UserPatchD
         User user = entityMapper.toEntityFromCreateDto(userCreateDto);
         user.setAuthorities(Set.of(userCreateDto.getRole()));
         user.setActive(true);
+        user.setPassword(passwordEncoder.encode(userCreateDto.getPassword()));
         buildFullName(user);
         save(user);
         return mapper.domainToDto(user);

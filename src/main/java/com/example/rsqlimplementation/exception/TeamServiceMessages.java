@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum UserServiceMessages implements Message {
+public enum TeamServiceMessages implements Message{
 
-    USER_ALREADY_EXISTS(-10,"error.user_already_exists"),
-    USER_NOT_FOUND(-11,"error.user_not_found");
+    TEAM_NOT_FOUND(-13,"error.team_not_found");
 
     private final int code;
     private final String text;

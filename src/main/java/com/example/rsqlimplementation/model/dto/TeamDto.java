@@ -18,5 +18,5 @@ public class TeamDto {
 
     private String description;
 
-    private Set<UserDto> users;
+    private Set<UserShortDto> users;
 }

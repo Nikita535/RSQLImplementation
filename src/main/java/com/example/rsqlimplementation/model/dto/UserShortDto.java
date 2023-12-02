@@ -2,14 +2,12 @@ package com.example.rsqlimplementation.model.dto;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
-public class UserPatchDto {
+public class UserShortDto {
+
+    private Long id;
     private String username;
 
     private String email;
@@ -20,5 +18,7 @@ public class UserPatchDto {
 
     private String middleName;
 
+    private String fullName;
     private String mobilePhoneNumber;
+    private boolean active;
 }
